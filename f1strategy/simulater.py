@@ -1,0 +1,1 @@
+# stint → total race time         (Checkpoint 3)
