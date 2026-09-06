@@ -1,4 +1,13 @@
 data/
 cache
+
+#VS Code
+.vscode/
+
+# Python
 __pycache__/
-.venv
+*.egg-info/
+build/
+dist/
+.pytest_cache/
+.ipynb_checkpoints/
