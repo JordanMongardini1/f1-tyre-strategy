@@ -10,13 +10,22 @@ name = "f1strategy"
 version = "0.1.0"
 requires-python = ">=3.12"
 dependencies = [
-    "fastf1",
-    "pandas",
-    "numpy",
+    "fastf1~=3.8.3",
+    "pandas~=2.3.3",
+    "numpy~=2.5.2",
     "torch",
     "scikit-learn",
+    "statsmodels",
     "matplotlib",
+    "pyarrow",
 ]
 
 [project.optional-dependencies]
 dev = ["jupyter", "pytest"]
+
+[tool.pytest.ini_options]
+markers = ["slow: hits the network for a full season"]
+addopts = "-m 'not slow'"
+filterwarnings = [
+    "ignore:The 'generic' unit for NumPy timedelta is deprecated:DeprecationWarning",
+]
