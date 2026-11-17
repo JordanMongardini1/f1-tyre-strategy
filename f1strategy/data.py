@@ -1,4 +1,3 @@
-# FastF1 loading + lap cleaning   (Checkpoint 1)
 from pathlib import Path
 import fastf1
 import pandas
@@ -6,6 +5,7 @@ from pandas import DataFrame
 
 DATA_DIR = Path(__file__).resolve().parent.parent / "data"
 CACHE_DIR = DATA_DIR / "fastf1_cache"
+FIGURES_DIR = Path(__file__).resolve().parent.parent / "figures"
 
 #Column definitions for the cleaned race data
 IDENTIFIERS = ["Year", "RoundNumber", "EventName", "Location", 
@@ -57,16 +57,19 @@ def get_data(session, event):
 
     data = laps[cols].copy()
 
+    #convert lap times and pit times to seconds
     data["LapTime_s"] = laps["LapTime"].dt.total_seconds()
     data["PitInTime_s"] = laps["PitInTime"].dt.total_seconds()
     data["PitOutTime_s"] = laps["PitOutTime"].dt.total_seconds()
 
+    #add event information to the data so that models in the future can learn about the context of each lap
     data['Location'] = event["Location"]
     data['RoundNumber'] = event["RoundNumber"]
     data['EventName'] = event["EventName"]
 
     data["Year"] = event["EventDate"].year
 
+    #build a unique stint identifier for each driver in each race so that each stint can be easily referenced
     data["StintId"] = (
         data["Year"].astype(str)
         + "_" + data["RoundNumber"].astype(str)
@@ -100,6 +103,7 @@ def load_race(year: int, rnd: int):
     #return both raw and clean data
     return clean_df, raw_df
 
+#Build a list of rounds for a given year, excluding testing events and future events
 def build_round_list(year: int):
     schedule = fastf1.get_event_schedule(year)
 
